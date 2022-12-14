@@ -37,4 +37,60 @@ spec:
     protocol: TCP
     targetPort: 8080
   type: NodePort
-
+---
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-prod
+  namespace: demo
+spec:
+  acme:
+    # The ACME server URL
+    server: https://acme-v02.api.letsencrypt.org/directory
+    # Email address used for ACME registration
+    email: saiym911@gmail.com
+    # Name of a secret used to store the ACME account private key
+    privateKeySecretRef:
+      name: letsencrypt-prod
+    # Enable the HTTP-01 challenge provider
+    solvers:
+    - http01:
+        ingress:
+          class: traefik
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: demo
+  namespace: demo
+spec:
+  secretName: demo
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  commonName: demo.e65f444e-e201-40bd-b0f4-7a18c3601d00.k8s.civo.com
+  dnsNames:
+  - demo.e65f444e-e201-40bd-b0f4-7a18c3601d00.k8s.civo.com
+---
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    kubernetes.io/ingress.class: traefik
+  name: demo-app-ingress
+  namespace: demo
+spec:
+  rules:
+  - host: demo.e65f444e-e201-40bd-b0f4-7a18c3601d00.k8s.civo.com
+    http:
+      paths:
+      - backend:
+          service:
+            name: helloservice
+            port:
+              number: 80
+        path: /
+        pathType: Prefix
+  tls:
+  - hosts:
+    - demo.e65f444e-e201-40bd-b0f4-7a18c3601d00.k8s.civo.com
+    secretName: demo
