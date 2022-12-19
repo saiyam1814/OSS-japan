@@ -15,7 +15,7 @@ spec:
       terminationGracePeriodSeconds: 5
       containers:
       - name: server
-        image: saiyam911/ossjapan:sha-f759f32
+        image: saiyam911/ossjapan:sha-54e16d5
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
@@ -39,6 +39,7 @@ spec:
   type: NodePort
   
 ---
+apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
 metadata:
   name: letsencrypt-prod
@@ -74,6 +75,7 @@ spec:
   - demo.e65f444e-e201-40bd-b0f4-7a18c3601d00.k8s.civo.com
   
 ---
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   annotations:
