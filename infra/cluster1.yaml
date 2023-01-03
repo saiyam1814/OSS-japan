@@ -1,7 +1,7 @@
 kind: CivoKubernetes
 apiVersion: cluster.civo.crossplane.io/v1alpha1
 metadata: 
-  name: test-crossplane
+  name: test-crossplane2
   namespace: default
 spec:
   name: test-crossplane
